@@ -22,11 +22,12 @@
         <a href="/" class="btn-home">Home</a>
         <a href="{% url 'restaurant_list' %}" class="btn-restaurants">Restaurants</a>
         <a href="{% url 'contact_us' %}" class="btn-contact">Contact</a>
-        <a href="" class="btn-help">Help</a>
+        <a href="{% url 'help' %}" class="btn-help">Help</a>
     </section>
     <section class="login">
         {% if user.is_authenticated %}
-            <a class="login-btn btn-account" href="#">My account</a>
+            <a class="login-btn btn-account" href="{% url 'my_account' %}">My account</a>
+            <a class="login-btn btn-admin" href="{% url 'admin_tools' %}">Admin tools</a>
             <a class="login-btn btn-logout" href="{% url 'logout' %}">Log out</a>>
         {% else %}
             <a class="login-btn btn-login" href="{% url 'login' %}">Log in</a>

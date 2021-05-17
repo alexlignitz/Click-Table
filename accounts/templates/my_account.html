@@ -1,0 +1,24 @@
+{% extends '__base__.html' %}
+{% load static %}
+{% block main %}
+    <div class="my-account">
+        <h2>Hello, {{ user.username }}</h2>
+    <h3>Your upcoming reservations:</h3>
+    <table>
+        <tr>
+            <th>Restaurant</th>
+            <th>City</th>
+            <th>Table size</th>
+            <th>Table type</th>
+            <th>Options</th>
+        </tr>
+        <tr>
+            <td>Restaurant 1</td>
+            <td>Wrocław</td>
+            <td>4</td>
+            <td>Inside, no window</td>
+            <td><a href="#">Edit</a><a href="#">Delete</a></td>
+        </tr>
+    </table>
+    </div>
+{% endblock %}

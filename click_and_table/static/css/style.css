@@ -98,8 +98,12 @@ nav {
     font-weight: 500;
 }
 
-.menu a, .btn-register, .btn-logout {
+.menu a, .btn-register, .btn-logout, .btn-admin {
     color: white;
+}
+
+.btn-admin {
+    border-right: solid #222;
 }
 
 .btn-home {
@@ -534,12 +538,13 @@ div.login-form form {
 }
 
 /* ----CONTACT---- */
+
 div.contact_us {
     background-color: white;
     width: 90%;
     height: auto;
     margin: 0 auto;
-    padding: 10px;
+    padding: 10px 0;
 }
 
 .contact_us h2 {
@@ -557,6 +562,137 @@ div.contact_us {
     font-family: 'Raleway', 'Arial', sans-serif;
     font-size: 1.5rem;
     padding: 10px 20px;
+}
+
+/* ----HELP---- */
+
+div.help {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    background-color: white;
+    width: 90%;
+    height: auto;
+    margin: 0 auto;
+    padding: 10px 0;
+}
+
+.help img {
+    max-height: 30vh;
+}
+
+/* ----ADMIN TOOLS---- */
+
+div.admin {
+    background-color: white;
+    width: 90%;
+    height: auto;
+    margin: 0 auto;
+    padding: 10px 0;
+}
+
+.admin h2 {
+    background-color: #222;
+    display: inline-block;
+    width: 100%;
+    padding: 5px 20px;
+    color: white;
+    font-size: 3rem;
+    line-height: 3.5rem;
+    font-family: 'Raleway', 'Arial', sans-serif;
+}
+
+.admin a {
+    display: inline-block;
+    background-color: gold;
+    border: #222 solid 1px;
+    margin: 2px;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #222222;
+    font-size: 1.5rem;
+    font-family: 'Raleway', 'Arial', sans-serif;
+}
+
+.admin a:hover{
+    background-color: #222;
+    border: gold solid 1px;
+    color: gold;
+}
+
+.admin table {
+    margin: 20px 10px;
+    font-family: 'Raleway', 'Arial', sans-serif;
+    border: #222 solid 1px;
+}
+
+.admin th{
+    font-size: 1.5rem;
+    padding: 5px;
+    width: auto;
+}
+
+.admin td {
+    border: #222 solid 1px;
+    font-size: 1.5rem;
+    padding: 5px;
+    width: auto;
+}
+
+.admin table h3 {
+    padding: 5px;
+}
+
+/* ----My ACCOUNT---- */
+div.my-account {
+    background-color: white;
+    width: 90%;
+    height: auto;
+    margin: 0 auto;
+    padding: 10px 0;
+}
+
+.my-account h2 {
+    background-color: #222;
+    display: inline-block;
+    width: 100%;
+    padding: 5px 20px;
+    color: white;
+    font-size: 3rem;
+    line-height: 3.5rem;
+    font-family: 'Raleway', 'Arial', sans-serif;
+}
+
+.my-account a {
+    display: inline-block;
+    background-color: gold;
+    border: #222 solid 1px;
+    margin: 2px;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #222222;
+    font-size: 1.5rem;
+    font-family: 'Raleway', 'Arial', sans-serif;
+}
+
+.my-account a:hover{
+    background-color: #222;
+    border: gold solid 1px;
+    color: gold;
+}
+
+
+.my-account table {
+    margin: 20px 10px;
+    font-family: 'Raleway', 'Arial', sans-serif;
+    border: #222 solid 1px;
+}
+
+.my-account th, td {
+    border: #222 solid 1px;
+    font-size: 1.5rem;
+    padding: 5px;
+    width: auto;
 }
 
 /* ---FOOTER---- */
