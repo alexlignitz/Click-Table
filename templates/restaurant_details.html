@@ -1,0 +1,28 @@
+{% extends '__base__.html' %}
+{% load static %}
+{% block main %}
+    <div class="restaurant">
+        <div class="header-restaurant">
+            <div class="sidebar-restaurant">
+                <section class="restaurant-comments">
+                    {% include 'carousel_comments.html' %}
+                </section>
+            </div>
+            <h2>Restaurant name</h2>
+        </div>
+        <div class="restaurant-attributes">
+            <section class="average-rating"><span><i class="fa fa-star"></i></span>
+                <p>5</p></section>
+            <section class="categories"><span>Vegan</span><span>Italian</span></section>
+        </div>
+        <div>
+            <a class="book-a-table" href="#">Book a table</a>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan aliquet sem, eu finibus tortor
+                dapibus euismod. Nunc magna felis, commodo eget aliquam vitae, accumsan in ipsum. Pellentesque nec neque
+                lobortis sem tincidunt tincidunt ac quis nunc. Nulla eget nulla sit amet nisl lacinia cursus. Curabitur
+                semper non tellus ac egestas. Donec augue nunc, rhoncus sed aliquet aliquam, maximus sit amet magna.
+                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut varius
+                lobortis arcu accumsan consectetur. </p>
+        </div>
+    </div>
+{% endblock %}

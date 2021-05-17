@@ -1,0 +1,92 @@
+{% extends '__base__.html' %}
+{% load static %}
+{% block main %}
+    <div class="list">
+        <div class="list_item">
+            <img alt="restaurant1" src="https://cdn.pixabay.com/photo/2018/08/10/21/52/restaurant-3597677_960_720.jpg">
+            <h2><a href="{% url 'restaurant_details' %}">Restaurant name</a></h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan aliquet sem, eu finibus tortor
+                dapibus euismod. Nunc magna felis, commodo eget aliquam vitae, accumsan in ipsum. Pellentesque nec neque
+                lobortis sem tincidunt tincidunt ac quis nunc. Nulla eget nulla sit amet nisl lacinia cursus. Curabitur
+                semper non tellus ac egestas. Donec augue nunc, rhoncus sed aliquet aliquam, maximus sit amet magna.
+                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut varius
+                lobortis arcu accumsan consectetur. </p>
+            <section class="categories"><span>Vegan</span><span>Italian</span></section>
+            <section class="average-rating"><span><i class="fa fa-star"></i></span>
+                <p>5</p></section>
+        </div>
+        <div class="list_item">
+            <img alt="restaurant2"
+                 src="https://cdn.pixabay.com/photo/2016/11/21/16/02/outdoor-dining-1846137_960_720.jpg">
+            <h2>Restaurant name</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan aliquet sem, eu finibus tortor
+                dapibus euismod. Nunc magna felis, commodo eget aliquam vitae, accumsan in ipsum. Pellentesque nec neque
+                lobortis sem tincidunt tincidunt ac quis nunc. Nulla eget nulla sit amet nisl lacinia cursus. Curabitur
+                semper non tellus ac egestas. Donec augue nunc, rhoncus sed aliquet aliquam, maximus sit amet magna.
+                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut varius
+                lobortis arcu accumsan consectetur. </p>
+            <section class="categories"><span>Vegan</span><span>Italian</span></section>
+
+            <section class="average-rating"><span><i class="fa fa-star"></i></span>
+                <p>3.2</p></section>
+        </div>
+        <div class="list_item">
+            <img alt="restaurant3" src="https://cdn.pixabay.com/photo/2015/09/02/12/35/bar-918541_960_720.jpg">
+            <h2>Restaurant name</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan aliquet sem, eu finibus tortor
+                dapibus euismod. Nunc magna felis, commodo eget aliquam vitae, accumsan in ipsum. Pellentesque nec neque
+                lobortis sem tincidunt tincidunt ac quis nunc. Nulla eget nulla sit amet nisl lacinia cursus. Curabitur
+                semper non tellus ac egestas. Donec augue nunc, rhoncus sed aliquet aliquam, maximus sit amet magna.
+                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut varius
+                lobortis arcu accumsan consectetur. </p>
+            <section class="categories"><span>Vegan</span><span>Italian</span></section>
+
+            <section class="average-rating"><span><i class="fa fa-star"></i></span>
+                <p>4.6</p></section>
+        </div>
+    </div>
+    <div class="sidebar">
+        <section class="search">
+            <h2>Search by:</h2>
+            <form class="search-form" method="post">
+                {% csrf_token %}
+                <p><label for="name">Restaurant: <input type="text" name="name"></label></p>
+                <p><label for="city">City: <input type="text" name="city"></label></p>
+                <input class="submit-search" type="submit" value="Search">
+            </form>
+        </section>
+        <section class="filter">
+            <h2>Filter:</h2>
+            <form class="filter-form" method="post">
+                <p><label for="name">Category:
+                    <select>
+                        <option value="none">---</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="vegan">Italian</option>
+                        <option value="vegan">Asian</option>
+                        <option value="vegan">Polish</option>
+                    </select></label></p>
+                <p><label for="city">City:
+                    <select>
+                        <option value="warsaw">Warsaw</option>
+                        <option value="cracow">Cracow</option>
+                        <option value="wroclaw">Wroclaw</option>
+                    </select></label></p>
+                <p><label for="rating">Rating:
+                    <select>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select></label></p>
+                <p>Additional options:</p>
+                <p><input type="checkbox" name="garden" value="garden">
+                    <label for="garden">Garden table</label></p>
+                <p><input type="checkbox" name="window" value="window">
+                    <label for="window">Window table</label></p>
+                <input class="submit-filter" type="submit" value="Filter">
+            </form>
+        </section>
+    </div>
+{% endblock %}
