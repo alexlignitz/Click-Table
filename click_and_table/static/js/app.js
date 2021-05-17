@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const buttons = document.getElementsByClassName('vote-btn')
+    const counter = document.querySelector('.voting-counter')
     let counterValue = 0
 
 
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         button.addEventListener('click', function () {
             counterValue = counterValue + (i+1)
+            counter.innerText = counterValue
         })
     }
 

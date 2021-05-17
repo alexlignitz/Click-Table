@@ -13,16 +13,31 @@
         <div class="restaurant-attributes">
             <section class="average-rating"><span><i class="fa fa-star"></i></span>
                 <p>5</p></section>
+            <a class="book-a-table" href="#">Book a table</a>
             <section class="categories"><span>Vegan</span><span>Italian</span></section>
         </div>
         <div>
-            <a class="book-a-table" href="#">Book a table</a>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan aliquet sem, eu finibus tortor
                 dapibus euismod. Nunc magna felis, commodo eget aliquam vitae, accumsan in ipsum. Pellentesque nec neque
                 lobortis sem tincidunt tincidunt ac quis nunc. Nulla eget nulla sit amet nisl lacinia cursus. Curabitur
                 semper non tellus ac egestas. Donec augue nunc, rhoncus sed aliquet aliquam, maximus sit amet magna.
                 Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut varius
                 lobortis arcu accumsan consectetur. </p>
+        </div>
+        <div class="voting-area">
+            <h2>Add comment</h2>
+            {% if user.is_authenticated %}
+                {% include 'voting.html' %}
+            {% else %}
+                <div class="log-in">
+                    <p>To add a comment:</p>
+                    <a href="{% url 'login' %}">Log in</a>
+                </div>
+                <div class="registration">
+                    <p>New to Click&Table?</p>
+                    <a href="{% url 'registration' %}">Register</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

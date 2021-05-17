@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from click_and_table.views import Indexview, VotingView, RestaurantListView, RestaurantDetailsView
+from click_and_table.views import Indexview, VotingView, RestaurantListView, RestaurantDetailsView, ContactView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +24,5 @@ urlpatterns = [
     path('voting/', VotingView.as_view(), name="voting"),
     path('restaurant_list/', RestaurantListView.as_view(), name="restaurant_list"),
     path('restaurant_details', RestaurantDetailsView.as_view(), name="restaurant_details"),
+    path('contact_us', ContactView.as_view(), name="contact_us"),
 ]

@@ -1,8 +1,8 @@
-{% extends '__base__.html' %}
-{% block main %}
     <form class="voting-form" action="" method="post">
     {% csrf_token %}
         <div class="voting">
+{#            <input class="voting-counter" type="hidden" value="">#}
+            <p>Rating: <span class="voting-counter"></span></p>
             <div class="stars">
                 <input class="star star-5" id="star-5" type="radio" name="star"/>
                 <label class="star star-5" for="star-5"></label>
@@ -21,4 +21,3 @@
             <input class="submit" type="submit" value="Submit">
         </div>
     </form>
-{% endblock %}

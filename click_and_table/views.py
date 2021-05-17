@@ -1,6 +1,5 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-
-# Create your views here.
 from django.views import View
 
 
@@ -9,7 +8,7 @@ class Indexview(View):
         return render(request, '__base__.html')
 
 
-class VotingView(View):
+class VotingView(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, 'voting.html')
 
@@ -22,3 +21,8 @@ class RestaurantListView(View):
 class RestaurantDetailsView(View):
     def get(self, request):
         return render(request, 'restaurant_details.html')
+
+
+class ContactView(View):
+    def get(self, request):
+        return render(request, 'contact_us.html')
