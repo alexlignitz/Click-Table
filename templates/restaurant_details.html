@@ -13,7 +13,9 @@
         <div class="restaurant-attributes">
             <section class="average-rating"><span><i class="fa fa-star"></i></span>
                 <p>5</p></section>
+            {% if user.is_authenticated %}
             <a class="book-a-table" href="#">Book a table</a>
+            {% endif %}
             <section class="categories"><span>Vegan</span><span>Italian</span></section>
         </div>
         <div>
@@ -30,7 +32,7 @@
                 {% include 'voting.html' %}
             {% else %}
                 <div class="log-in">
-                    <p>To add a comment:</p>
+                    <p>To book a table or add a comment:</p>
                     <a href="{% url 'login' %}">Log in</a>
                 </div>
                 <div class="registration">

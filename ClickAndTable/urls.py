@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from click_and_table.views import Indexview, VotingView, RestaurantListView, RestaurantDetailsView, ContactView, \
-    HelpView, AdminView
+    HelpView, AdminView, AddRestaurantView, AddCategoryView, AddCityView 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +28,8 @@ urlpatterns = [
     path('contact_us', ContactView.as_view(), name="contact_us"),
     path('help', HelpView.as_view(), name="help"),
     path('admin_tools', AdminView.as_view(), name="admin_tools"),
+    path('restaurant_add', AddRestaurantView.as_view(), name="restaurant_add"),
+    path('category_add', AddCategoryView.as_view(), name="category_add"),
+    path('city_add', AddCityView.as_view(), name="city_add"),
+
 ]

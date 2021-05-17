@@ -643,7 +643,16 @@ div.admin {
     padding: 5px;
 }
 
-/* ----My ACCOUNT---- */
+/* ---- FORM.HTML---- */
+
+form.admin-form{
+    margin: 10px;
+    font-family: 'Raleway', 'Arial', sans-serif;
+    font-size: 1.5rem;
+}
+
+/* ----MY ACCOUNT---- */
+
 div.my-account {
     background-color: white;
     width: 90%;
