@@ -2,48 +2,21 @@
 {% load static %}
 {% block main %}
     <div class="list">
-        <div class="list_item">
-            <img alt="restaurant1" src="https://cdn.pixabay.com/photo/2018/08/10/21/52/restaurant-3597677_960_720.jpg">
-            <h2><a href="{% url 'restaurant_details' %}">Restaurant name</a></h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan aliquet sem, eu finibus tortor
-                dapibus euismod. Nunc magna felis, commodo eget aliquam vitae, accumsan in ipsum. Pellentesque nec neque
-                lobortis sem tincidunt tincidunt ac quis nunc. Nulla eget nulla sit amet nisl lacinia cursus. Curabitur
-                semper non tellus ac egestas. Donec augue nunc, rhoncus sed aliquet aliquam, maximus sit amet magna.
-                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut varius
-                lobortis arcu accumsan consectetur. </p>
-            <section class="categories"><span>Vegan</span><span>Italian</span></section>
-            <section class="average-rating"><span><i class="fa fa-star"></i></span>
-                <p>5</p></section>
-        </div>
-        <div class="list_item">
-            <img alt="restaurant2"
-                 src="https://cdn.pixabay.com/photo/2016/11/21/16/02/outdoor-dining-1846137_960_720.jpg">
-            <h2>Restaurant name</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan aliquet sem, eu finibus tortor
-                dapibus euismod. Nunc magna felis, commodo eget aliquam vitae, accumsan in ipsum. Pellentesque nec neque
-                lobortis sem tincidunt tincidunt ac quis nunc. Nulla eget nulla sit amet nisl lacinia cursus. Curabitur
-                semper non tellus ac egestas. Donec augue nunc, rhoncus sed aliquet aliquam, maximus sit amet magna.
-                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut varius
-                lobortis arcu accumsan consectetur. </p>
-            <section class="categories"><span>Vegan</span><span>Italian</span></section>
-
-            <section class="average-rating"><span><i class="fa fa-star"></i></span>
-                <p>3.2</p></section>
-        </div>
-        <div class="list_item">
-            <img alt="restaurant3" src="https://cdn.pixabay.com/photo/2015/09/02/12/35/bar-918541_960_720.jpg">
-            <h2>Restaurant name</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan aliquet sem, eu finibus tortor
-                dapibus euismod. Nunc magna felis, commodo eget aliquam vitae, accumsan in ipsum. Pellentesque nec neque
-                lobortis sem tincidunt tincidunt ac quis nunc. Nulla eget nulla sit amet nisl lacinia cursus. Curabitur
-                semper non tellus ac egestas. Donec augue nunc, rhoncus sed aliquet aliquam, maximus sit amet magna.
-                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut varius
-                lobortis arcu accumsan consectetur. </p>
-            <section class="categories"><span>Vegan</span><span>Italian</span></section>
-
-            <section class="average-rating"><span><i class="fa fa-star"></i></span>
-                <p>4.6</p></section>
-        </div>
+        {% for restaurant in restaurants %}
+            <div class="list_item">
+                <img alt="restaurant1"
+                     src="https://cdn.pixabay.com/photo/2018/08/10/21/52/restaurant-3597677_960_720.jpg">
+                <h2><a href="{% url 'restaurant_details' %}">{{ restaurant.name }}</a></h2>
+                <p>{{ restaurant.description }}</p>
+                <section class="categories">
+                    {% for category in restaurant.category.all %}
+                        <span>{{ category.name }}</span>
+                    {% endfor %}
+                </section>
+                <section class="average-rating"><span><i class="fa fa-star"></i></span>
+                    <p>N</p></section>
+            </div>
+        {% endfor %}
     </div>
     <div class="sidebar">
         <section class="search">

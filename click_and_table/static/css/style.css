@@ -620,10 +620,18 @@ div.admin {
     color: gold;
 }
 
+.admin .tab_trigger{
+    border-bottom: darkgray solid 1px;
+}
+
 .admin table {
     margin: 20px 10px;
     font-family: 'Raleway', 'Arial', sans-serif;
     border: #222 solid 1px;
+}
+
+.admin .tab-wrap{
+    margin: 20px;
 }
 
 .admin th{

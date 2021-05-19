@@ -1,0 +1,18 @@
+{% extends 'admin_tools.html' %}
+{% block content %}
+    <a href="{% url 'city_add' %}">Add city</a>
+    <section class="cities-lst-admin">
+        <table>
+            <tr>
+                <th colspan="3"><h3>Edit/delete city</h3></th>
+            </tr>
+            {% for city in cities %}
+            <tr>
+                <td>{{ city.name }}</td>
+                <td><a href="{% url 'city_edit' city.pk %}">Edit</a></td>
+                <td><a href="{% url 'city_delete' city.id %}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+{% endblock %}

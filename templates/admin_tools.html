@@ -1,24 +1,17 @@
 {% extends '__base__.html' %}
-{% load static %}
 {% block main %}
+    {% load static %}
     <div class="admin">
         <h2>Admin tools:</h2>
-        <a href="{% url 'restaurant_add' %}">Add restaurant</a><a href="{% url 'category_add' %}">Add category</a><a href="{% url 'city_add' %}">Add city</a>
-        {% block content %}
-            <section class="restaurant-lst-admin">
-                <table>
-                    <tr>
-                        <th colspan="2"><h3>Edit/delete restaurant</h3></th>
-                        <th colspan="2"><input type="text" placeholder="Search.."><input type="submit" value="Go"></th>
-                    </tr>
-                    <tr>
-                        <td>Restaurant 1</td>
-                        <td>Wroclaw</td>
-                        <td><a href="#">Edit</a></td>
-                        <td><a href="#">Delete</a></td>
-                    </tr>
-                </table>
-            </section>
-        {% endblock %}
+        <div class="tab_trigger">
+            <a href="{% url 'admin_restaurants' %}">Restaurants</a>
+            <a href="{% url 'admin_categories' %}">Categories</a>
+            <a href="{% url 'admin_cities' %}">Cities</a>
+        </div>
+        <div class="tab-wrap">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
+
 {% endblock %}

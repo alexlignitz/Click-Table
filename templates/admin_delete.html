@@ -1,0 +1,9 @@
+{% extends 'admin_tools.html' %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <h3>Delete {{ object.name }}?</h3>
+        <input type="submit" name="answer" value="Yes">
+        <input type="submit" name="answer" value="No">
+    </form>
+{% endblock %}
