@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'click_and_table.apps.ClickAndTableConfig',
     'accounts',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

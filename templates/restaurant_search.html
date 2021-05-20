@@ -1,0 +1,8 @@
+<section class="search">
+    <h2>Search:</h2>
+    <form class="search-form" method="post">
+        {% csrf_token %}
+        <p><label for="name">Restaurant: <input type="text" name="name"></label></p>
+        <input class="submit-search" type="submit" value="Search">
+    </form>
+</section>

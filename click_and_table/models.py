@@ -19,17 +19,15 @@ class Category(models.Model):
         return self.name
 
 
-# def average_rating():
-#     votes = Rating.objects.filter(id)
-#     return sum(votes) / len(votes)
-
-
 class Restaurant(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField()
     street = models.CharField(max_length=128)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     category = models.ManyToManyField(Category)
+
+    def __str__(self):
+        return self.name
 
 
 class Table(models.Model):
@@ -63,3 +61,7 @@ class Rating(models.Model):
     comment = models.TextField(null=False)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+# def average_rating(id):
+#     votes = Rating.objects.filter(restaurant_id=id).values('vote', flat=True)
+#     return sum(votes) / len(votes)

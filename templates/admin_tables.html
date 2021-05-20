@@ -1,0 +1,23 @@
+{% extends 'admin_tools.html' %}
+{% block content %}
+    <a href="{% url 'table_add' %}">Add table</a>
+    <section class="tables-lst-admin">
+        <table>
+            <tr>
+                <th>Table size</th>
+                <th>Window seat</th>
+                <th>Garden seat</th>
+                <th colspan="2">Edit/delete table</th>
+            </tr>
+            {% for table in tables %}
+            <tr>
+                <td>{{ table.size }}</td>
+                <td>{{ table.window_view }}</td>
+                <td>{{ table.outside }}</td>
+                <td><a href="{% url 'table_edit' table.pk %}">Edit</a></td>
+                <td><a href="{% url 'table_delete' table.id %}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+{% endblock %}

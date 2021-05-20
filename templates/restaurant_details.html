@@ -8,7 +8,7 @@
                     {% include 'carousel_comments.html' %}
                 </section>
             </div>
-            <h2>Restaurant name</h2>
+            <h2>{{ restaurant.name }}</h2>
         </div>
         <div class="restaurant-attributes">
             <section class="average-rating"><span><i class="fa fa-star"></i></span>
@@ -16,15 +16,12 @@
             {% if user.is_authenticated %}
             <a class="book-a-table" href="#">Book a table</a>
             {% endif %}
-            <section class="categories"><span>Vegan</span><span>Italian</span></section>
+        {% for category in restaurant.category.all %}
+            <section class="categories"><span>{{ category.name }}</span></section>
+        {% endfor %}
         </div>
         <div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan aliquet sem, eu finibus tortor
-                dapibus euismod. Nunc magna felis, commodo eget aliquam vitae, accumsan in ipsum. Pellentesque nec neque
-                lobortis sem tincidunt tincidunt ac quis nunc. Nulla eget nulla sit amet nisl lacinia cursus. Curabitur
-                semper non tellus ac egestas. Donec augue nunc, rhoncus sed aliquet aliquam, maximus sit amet magna.
-                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut varius
-                lobortis arcu accumsan consectetur. </p>
+            <p>{{ restaurant.description}}</p>
         </div>
         <div class="voting-area">
             <h2>Add comment</h2>

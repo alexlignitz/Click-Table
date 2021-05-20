@@ -1,6 +1,6 @@
 from django import forms
 
-from click_and_table.models import Restaurant, Category, City
+from click_and_table.models import Restaurant, Category, City, Table
 
 
 class RestaurantForm(forms.ModelForm):
@@ -22,4 +22,10 @@ class CategoryForm(forms.ModelForm):
 class CityForm(forms.ModelForm):
     class Meta:
         model = City
+        fields = '__all__'
+
+
+class TableForm(forms.ModelForm):
+    class Meta:
+        model = Table
         fields = '__all__'

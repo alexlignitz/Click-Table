@@ -6,7 +6,7 @@
             <div class="list_item">
                 <img alt="restaurant1"
                      src="https://cdn.pixabay.com/photo/2018/08/10/21/52/restaurant-3597677_960_720.jpg">
-                <h2><a href="{% url 'restaurant_details' %}">{{ restaurant.name }}</a></h2>
+                <h2><a href="{% url 'restaurant_details' restaurant.id %}">{{ restaurant.name }}</a></h2>
                 <p>{{ restaurant.description }}</p>
                 <section class="categories">
                     {% for category in restaurant.category.all %}
@@ -19,44 +19,11 @@
         {% endfor %}
     </div>
     <div class="sidebar">
-        <section class="search">
-            <h2>Search:</h2>
-            <form class="search-form" method="post">
-                {% csrf_token %}
-                <p><label for="name">Restaurant: <input type="text" name="name"></label></p>
-                <input class="submit-search" type="submit" value="Search">
-            </form>
-        </section>
         <section class="filter">
-            <h2>Filter:</h2>
-            <form class="filter-form" method="post">
-                <p><label for="name">Category:
-                    <select>
-                        <option value="none">---</option>
-                        <option value="vegan">Vegan</option>
-                        <option value="vegan">Italian</option>
-                        <option value="vegan">Asian</option>
-                        <option value="vegan">Polish</option>
-                    </select></label></p>
-                <p><label for="city">City:
-                    <select>
-                        <option value="warsaw">Warsaw</option>
-                        <option value="cracow">Cracow</option>
-                        <option value="wroclaw">Wroclaw</option>
-                    </select></label></p>
-                <p><label for="rating">Rating:
-                    <select>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select></label></p>
-                <p>Additional options:</p>
-                <p><input type="checkbox" name="garden" value="garden">
-                    <label for="garden">Garden table</label></p>
-                <p><input type="checkbox" name="window" value="window">
-                    <label for="window">Window table</label></p>
+            <h2>Search & Filter:</h2>
+            <form class="filter-form">
+                {% csrf_token %}
+                {{ my_filter.form }}
                 <input class="submit-filter" type="submit" value="Filter">
             </form>
         </section>
