@@ -2,6 +2,7 @@ import random
 import string
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Avg
 from django.urls import reverse_lazy
@@ -41,9 +42,25 @@ class Table(models.Model):
     size = models.SmallIntegerField(null=False)
     window_view = models.BooleanField(default=False)
     outside = models.BooleanField(default=False)
+    #
+    # def clean(self):
+    #     data = super().clean()
+    #     window = data['window_view']
+    #     outside = data['outside']
+    #     if window and outside:
+    #         raise ValidationError('Cannot choose window seat AND garden seat, please choose one')
+    #     return data
 
     def get_absolute_url(self):
         return reverse_lazy('admin_tables', kwargs={'id': self.restaurant.id})
+
+    def __str__(self):
+        if self.window_view and not self.outside:
+            return f"{self.size} person, window"
+        elif self.outside and not self.window_view:
+            return f"{self.size} person, garden"
+        else:
+            return f"{self.size} person, inside no window"
 
 
 def generate_reservation_code(size=6, chars=string.ascii_uppercase + string.digits):
@@ -58,6 +75,9 @@ class Reservation(models.Model):
     time_to = models.TimeField(auto_now=False, auto_now_add=False, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reservation_code = models.CharField(max_length=64, default=generate_reservation_code)
+
+    def __str__(self):
+        return f"{self.restaurant} ({self.date}, {self.time_from})"
 
 
 class Rating(models.Model):

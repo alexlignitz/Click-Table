@@ -14,7 +14,7 @@
             <section class="average-rating"><span><i class="fa fa-star"></i></span>
                 <p>{{ avg_rating }}</p></section>
             {% if user.is_authenticated %}
-                <a class="book-a-table" href="#">Book a table</a>
+                <a class="book-a-table" href="{% url 'reservation' restaurant.id %}">Book a table</a>
             {% endif %}
             {% for category in restaurant.category.all %}
                 <section class="categories"><span>{{ category.name }}</span></section>

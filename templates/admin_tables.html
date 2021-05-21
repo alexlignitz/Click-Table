@@ -1,5 +1,6 @@
 {% extends 'admin_tools.html' %}
 {% block content %}
+    <h3>{{ restaurant.name }}</h3>
     <a href="{% url 'table_add' restaurant.id %}">Add table</a>
     <section class="tables-lst-admin">
         <table>

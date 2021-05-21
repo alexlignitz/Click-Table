@@ -439,9 +439,9 @@ div.stars {
     width: 100%
 }
 
-/*input.star {*/
-/*    display: none;*/
-/*}*/
+input.star {
+    display: none;
+}
 
 label.star {
     display: inline-block;
@@ -609,6 +609,12 @@ div.admin {
     font-family: 'Raleway', 'Arial', sans-serif;
 }
 
+.admin h3{
+    font-size: 2.5rem;
+    line-height: 3rem;
+    font-family: 'Raleway', 'Arial', sans-serif;
+}
+
 .admin a {
     display: inline-block;
     background-color: gold;
@@ -661,7 +667,7 @@ div.admin {
 
 /* ---- FORM.HTML---- */
 
-form.admin-form{
+form.admin-form, form.rsrv-edit-form, form.rsrv-form{
     margin: 10px;
     font-family: 'Raleway', 'Arial', sans-serif;
     font-size: 1.5rem;

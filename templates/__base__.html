@@ -9,8 +9,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100;0,500;1,100&display=swap"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css"
+          integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js"
+            integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script src="{% static 'js/app.js' %}"></script>
+    <script type="text/javascript">
+$(document).ready(function() {
+   $('.datepicker').datepicker();
+});
+</script>
 </head>
 <header>
     <h1>Click&Table</h1>
@@ -28,8 +36,8 @@
         {% if user.is_authenticated %}
             <a class="login-btn btn-account" href="{% url 'my_account' %}">My account</a>
             {% for group in user.groups.all %}
-            {% if group.name == "Admin" %}
-            <a class="login-btn btn-admin" href="{% url 'admin_tools' %}">Admin tools</a>
+                {% if group.name == "Admin" %}
+                    <a class="login-btn btn-admin" href="{% url 'admin_tools' %}">Admin tools</a>
                 {% endif %}
             {% endfor %}
             <a class="login-btn btn-logout" href="{% url 'logout' %}">Log out</a>>

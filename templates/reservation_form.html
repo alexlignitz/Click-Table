@@ -1,6 +1,10 @@
 {% extends 'restaurant_details.html' %}
 {% load static %}
 {% block voting-booking %}
+    <form class="rsrv-form" method="post">
+    {% csrf_token %}
     <h2>Book a table</h2>
     {{ form.as_p }}
+    <input type="submit" value="Submit">
+    </form>
 {% endblock %}

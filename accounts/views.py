@@ -5,6 +5,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView
 
+from click_and_table.models import Reservation
+
 
 class RegistrationView(CreateView):
     form_class = UserCreationForm
@@ -14,4 +16,6 @@ class RegistrationView(CreateView):
 
 class MyAccountView(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, 'my_account.html', )
+        reservations = Reservation.objects.filter(user=request.user).order_by('date')
+        return render(request, 'my_account.html', {'reservations': reservations})
+

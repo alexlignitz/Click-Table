@@ -18,20 +18,23 @@ from django.urls import path, include
 from click_and_table.views import Indexview, RestaurantListView, RestaurantDetailsView, ContactView, \
     HelpView, AdminView, AddRestaurantView, AddCategoryView, AddCityView, AdminRestaurantsView, AdminCategoriesView, \
     AdminCitiesView, EditRestaurantView, EditCategoryView, EditCityView, DeleteCityView, DeleteRestaurantView, \
-    DeleteCategoryView, AdminTablesView, AddTableView, EditTableView, DeleteTableView
-    # ReservationView
+    DeleteCategoryView, AdminTablesView, AddTableView, EditTableView, DeleteTableView, ReservationView, \
+    EditReservationView, DeleteReservationView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # -------------ACCOUNTS-------------#
     path('accounts/', include('accounts.urls')),
+    path('accounts/reservation_edit/<int:id>/', EditReservationView.as_view(), name="reservation_edit"),
+    path('accounts/reservation_delete/<int:id>/', DeleteReservationView.as_view(), name="reservation_delete"),
     # -------------MAIN APP-------------#
     path('', Indexview.as_view(), name="index"),
     path('restaurant_list/', RestaurantListView.as_view(), name="restaurant_list"),
     path('restaurant_details/<int:id>/', RestaurantDetailsView.as_view(), name="restaurant_details"),
     path('contact_us/', ContactView.as_view(), name="contact_us"),
     path('help/', HelpView.as_view(), name="help"),
-    # path('reservation/<int:id>', ReservationView.as_view(), name="reservation"),
+    path('reservation/<int:id>', ReservationView.as_view(), name="reservation"),
+
     # -------------ADMIN TOOLS-------------#
     path('admin_tools/', AdminView.as_view(), name="admin_tools"),
     path('admin_restaurants/', AdminRestaurantsView.as_view(), name="admin_restaurants"),
@@ -47,7 +50,7 @@ urlpatterns = [
     path('category_delete/<int:id>/', DeleteCategoryView.as_view(), name="category_delete"),
     path('city_delete/<int:id>/', DeleteCityView.as_view(), name="city_delete"),
     path('restaurant/<int:id>/admin_tables/', AdminTablesView.as_view(), name="admin_tables"),
-    path('restaurant/<int:id>/table_add/', AddTableView.as_view(), name="table_add"),
-    path('restaurant/<int:pk>/table_edit/', EditTableView.as_view(), name="table_edit"),
-    path('restaurant/<int:id>/table_delete/', DeleteTableView.as_view(), name="table_delete"),
+    path('restaurant/<int:rest_id>/table_add/', AddTableView.as_view(), name="table_add"),
+    path('restaurant/table_edit/<int:pk>/', EditTableView.as_view(), name="table_edit"),
+    path('restaurant/table_delete/<int:table_id>/', DeleteTableView.as_view(), name="table_delete"),
 ]

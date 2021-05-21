@@ -31,5 +31,20 @@ class TableForm(forms.ModelForm):
         fields = '__all__'
 
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+class TimeInput(forms.TimeInput):
+    input_type = 'time'
+
+
 class ReservationForm(forms.ModelForm):
-    pass
+    class Meta:
+        model = Reservation
+        fields = ['table', 'date', 'time_from', 'time_to']
+        widgets = {
+            'date': DateInput,
+            'time_from': TimeInput,
+            'time_to': TimeInput
+        }
