@@ -34,7 +34,7 @@
             {% endfor %}
             <a class="login-btn btn-logout" href="{% url 'logout' %}">Log out</a>>
         {% else %}
-            <a class="login-btn btn-login" href="{% url 'login' %}">Log in</a>
+            <a class="login-btn btn-login" href="{% url 'login' %}?next={{ request.path }}}">Log in</a>
             <a class="login-btn btn-register" href="{% url 'registration' %}">Register</a>
         {% endif %}
     </section>

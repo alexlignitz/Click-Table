@@ -1,11 +1,13 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from datetime import datetime
+
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import UpdateView
 from .filters import RestaurantFilter
-from click_and_table.forms import RestaurantForm, CategoryForm, CityForm, TableForm
-from click_and_table.models import Category, City, Restaurant, Table  # average_rating
+from click_and_table.forms import RestaurantForm, CategoryForm, CityForm, TableForm, ReservationForm
+from click_and_table.models import Category, City, Restaurant, Table, Rating  # Reservation
 
 
 class Indexview(View):
@@ -26,7 +28,18 @@ class RestaurantListView(View):
 class RestaurantDetailsView(View):
     def get(self, request, id):
         restaurant = Restaurant.objects.get(id=id)
-        # rating = average_rating(id=id)
+        rating_1 = Rating.objects.filter(restaurant_id=id)[0]
+        ratings = Rating.objects.filter(restaurant_id=id)[1:]
+        avg_rating = restaurant.average_rating()
+        return render(request, 'restaurant_details.html',
+                      {'restaurant': restaurant, 'avg_rating': avg_rating, 'rating_1': rating_1, 'ratings': ratings})
+
+    def post(self, request, id):
+        restaurant = Restaurant.objects.get(id=id)
+        vote = request.POST.get('star')
+        comment = request.POST.get('comment')
+        user = request.user
+        Rating.objects.create(vote=vote, comment=comment, user=user, restaurant=restaurant)
         return render(request, 'restaurant_details.html', {'restaurant': restaurant})
 
 
@@ -40,11 +53,25 @@ class HelpView(View):
         return render(request, 'help.html')
 
 
-# ------------------------------------- LOGIN REQUIRED -------------------------------------------------------------
+# class ReservationView(View):
+#     def get(self, request, id):
+#         restaurant = Restaurant.objects.get(pk=id)
+#         form = ReservationForm
+#         return render(request, 'reservation_form.html', {'form': form, 'restaurant': restaurant})
 
-class VotingView(LoginRequiredMixin, View):
-    def get(self, request):
-        return render(request, 'voting.html')
+# def post(self, request, id):
+#     table =
+#     time_from_str = datetime.strptime(request.POST.get('time_from'), '%d-%m-%Y %H:%M')
+#     time_to_str = datetime.strptime(request.POST.get('time_to'), '%d-%m-%Y %H:%M')
+#     time_now = datetime.now()
+#     if Reservation.objects.filter(restaurant_id=id, table=table, time_from=time_from_str, time_to=time_to_str).exists():
+#         return HttpResponse('Table not available')
+#     elif date_str < time_now:
+#         return HttpResponse('Cannot make a reservation in the past')
+#     else:
+#         reservation = Reservation(table=table, restaurant_id=id)
+#         reservation.save()
+#         return redirect('/room_list/')
 
 
 # ------------------------------------- ADMIN TOOLS -------------------------------------------------------------
@@ -80,8 +107,9 @@ class AdminCitiesView(View):
 
 class AdminTablesView(View):
     def get(self, request, id):
-        tables = Table.objects.filter(restaurant_id=id)
-        return render(request, 'admin_tables.html', {'tables': tables})
+        restaurant = Restaurant.objects.get(pk=id)
+        tables = Table.objects.filter(restaurant_id=restaurant.id)
+        return render(request, 'admin_tables.html', {'tables': tables, 'restaurant': restaurant})
 
 
 class AddRestaurantView(PermissionRequiredMixin, View):
@@ -92,10 +120,11 @@ class AddRestaurantView(PermissionRequiredMixin, View):
         return render(request, 'form.html', {'form': form})
 
     def post(self, request):
+        restaurants = Restaurant.objects.all()
         form = RestaurantForm(request.POST)
         if form.is_valid():
             form.save()
-        return render(request, 'message_template.html', {'msg': 'Restaurant added'})
+        return render(request, 'admin_restaurants.html', {'restaurants': restaurants})
 
 
 class EditRestaurantView(PermissionRequiredMixin, UpdateView):
@@ -115,11 +144,11 @@ class DeleteRestaurantView(PermissionRequiredMixin, View):
         return render(request, 'admin_delete.html', {'object': restaurant})
 
     def post(self, request, id):
+        restaurants = Restaurant.objects.all()
         if request.POST.get('answer') == "Yes":
             restaurant = Restaurant.objects.get(id=id)
             restaurant.delete()
-            return render(request, 'message_template.html', {'msg': 'Restaurant deleted'})
-        restaurants = Restaurant.objects.all()
+            return render(request, 'admin_restaurants.html', {'restaurants': restaurants})
         return render(request, 'admin_restaurants.html', {'restaurants': restaurants})
 
 
@@ -131,11 +160,12 @@ class AddCategoryView(PermissionRequiredMixin, View):
         return render(request, 'form.html', {'form': form})
 
     def post(self, request):
+        categories = Category.objects.all()
         form = CategoryForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
             Category.objects.create(name=name)
-        return render(request, 'message_template.html', {'msg': 'Category created'})
+        return render(request, 'admin_categories.html', {'categories': categories})
 
 
 class EditCategoryView(PermissionRequiredMixin, UpdateView):
@@ -155,11 +185,11 @@ class DeleteCategoryView(View):
         return render(request, 'admin_delete.html', {'object': category})
 
     def post(self, request, id):
+        categories = Category.objects.all()
         if request.POST.get('answer') == "Yes":
             category = Category.objects.get(id=id)
             category.delete()
-            return render(request, 'message_template.html', {'msg': 'Category deleted'})
-        categories = Category.objects.all()
+            return render(request, 'admin_categories.html', {'categories': categories})
         return render(request, 'admin_categories.html', {'categories': categories})
 
 
@@ -171,11 +201,12 @@ class AddCityView(PermissionRequiredMixin, View):
         return render(request, 'form.html', {'form': form})
 
     def post(self, request):
+        cities = City.objects.all()
         form = CityForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
             City.objects.create(name=name)
-        return render(request, 'message_template.html', {'msg': 'City added'})
+        return render(request, 'admin_cities.html', {'cities': cities})
 
 
 class EditCityView(PermissionRequiredMixin, UpdateView):
@@ -195,26 +226,29 @@ class DeleteCityView(View):
         return render(request, 'admin_delete.html', {'object': city})
 
     def post(self, request, id):
+        cities = City.objects.all()
         if request.POST.get('answer') == "Yes":
             city = City.objects.get(id=id)
             city.delete()
             return render(request, 'message_template.html', {'msg': 'City deleted'})
-        cities = City.objects.all()
         return render(request, 'admin_cities.html', {'cities': cities})
 
 
 class AddTableView(PermissionRequiredMixin, View):
     permission_required = ['click_and_table.add_table']
 
-    def get(self, request):
-        form = TableForm
+    def get(self, request, id):
+        restaurant = Restaurant.objects.get(pk=id)
+        form = TableForm(initial={'restaurant': restaurant.id})
         return render(request, 'form.html', {'form': form})
 
-    def post(self, request):
+    def post(self, request, id):
+        restaurant = Restaurant.objects.get(pk=id)
+        tables = Table.objects.filter(restaurant_id=id)
         form = TableForm(request.POST)
         if form.is_valid():
             form.save()
-        return render(request, 'message_template.html', {'msg': 'Table added'})
+        return render(request, 'admin_tables.html', {'tables': tables, 'restaurant': restaurant})
 
 
 class EditTableView(PermissionRequiredMixin, UpdateView):
@@ -222,7 +256,6 @@ class EditTableView(PermissionRequiredMixin, UpdateView):
 
     model = Table
     fields = '__all__'
-    success_url = reverse_lazy('admin_tables')
     template_name = 'form.html'
 
 
@@ -234,9 +267,11 @@ class DeleteTableView(PermissionRequiredMixin, View):
         return render(request, 'admin_delete.html', {'object': table})
 
     def post(self, request, id):
+        restaurant = Restaurant.objects.get(pk=id)
+        tables = Table.objects.filter(restaurant_id=id)
         if request.POST.get('answer') == "Yes":
             table = Table.objects.get(id=id)
             table.delete()
-            return render(request, 'message_template.html', {'msg': 'Table deleted'})
+            return render(request, 'admin_tables.html', {'tables': tables, 'restaurant': restaurant})
         tables = Restaurant.objects.all()
         return render(request, 'admin_tables.html', {'tables': tables})

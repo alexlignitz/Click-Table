@@ -3,6 +3,8 @@ import string
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Avg
+from django.urls import reverse_lazy
 
 
 class City(models.Model):
@@ -20,6 +22,10 @@ class Category(models.Model):
 
 
 class Restaurant(models.Model):
+    def average_rating(self):
+        avg = Rating.objects.filter(restaurant=self).aggregate(Avg('vote'))
+        return avg['vote__avg']
+
     name = models.CharField(max_length=128)
     description = models.TextField()
     street = models.CharField(max_length=128)
@@ -36,6 +42,9 @@ class Table(models.Model):
     window_view = models.BooleanField(default=False)
     outside = models.BooleanField(default=False)
 
+    def get_absolute_url(self):
+        return reverse_lazy('admin_tables', kwargs={'id': self.restaurant.id})
+
 
 def generate_reservation_code(size=6, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -44,24 +53,21 @@ def generate_reservation_code(size=6, chars=string.ascii_uppercase + string.digi
 class Reservation(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
-    time_from = models.DateTimeField(null=False)
-    time_to = models.DateTimeField(null=False)
+    date = models.DateField(null=True)
+    time_from = models.TimeField(auto_now=False, auto_now_add=False, null=True)
+    time_to = models.TimeField(auto_now=False, auto_now_add=False, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     reservation_code = models.CharField(max_length=64, default=generate_reservation_code)
 
 
 class Rating(models.Model):
-    VOTES = (
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4)
-    )
-    vote = models.SmallIntegerField(choices=VOTES, default=3)
+    vote = models.SmallIntegerField(default=0)
     comment = models.TextField(null=False)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-# def average_rating(id):
-#     votes = Rating.objects.filter(restaurant_id=id).values('vote', flat=True)
-#     return sum(votes) / len(votes)
+    def vote_to_list(self):
+        vote_lst = []
+        for x in range(self.vote):
+            vote_lst.append(1)
+        return vote_lst

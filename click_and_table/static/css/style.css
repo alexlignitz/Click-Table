@@ -281,6 +281,10 @@ div.restaurant {
     padding: 10px;
 }
 
+div.description{
+    min-height: 10vh;
+}
+
 .restaurant p {
     font-family: 'Raleway', 'Arial', sans-serif;
     font-size: 1.5rem;
@@ -435,9 +439,9 @@ div.stars {
     width: 100%
 }
 
-input.star {
-    display: none;
-}
+/*input.star {*/
+/*    display: none;*/
+/*}*/
 
 label.star {
     display: inline-block;
@@ -462,7 +466,7 @@ label.star:before {
     font-family: FontAwesome;
 }
 
-textarea.comment {
+textarea.comment-area {
     display: inline-block;
     width: 90%;
     height: 25vh;
@@ -473,9 +477,10 @@ textarea.comment {
     font-family: 'Raleway', 'Arial', sans-serif;
     font-weight: 500;
     color: #777;
+    resize: none;
 }
 
-textarea.comment:focus {
+textarea.comment-area:focus {
     outline: 0;
 }
 
