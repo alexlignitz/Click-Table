@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.db.models import Avg
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -14,7 +16,18 @@ from click_and_table.models import Category, City, Restaurant, Table, Rating, Re
 
 class Indexview(View):
     def get(self, request):
-        return render(request, '__base__.html')
+        rated_restaurants = Rating.objects.filter(restaurant_id__isnull=False).distinct()
+        restaurants = rated_restaurants.annotate(mean=Avg('vote')).order_by('-vote')
+        # rated_restaurants = Restaurant.objects.filter(rating__isnull=False).distinct()
+        # restaurants = sorted(rated_restaurants, key=lambda x: x.average_rating())top_1 = restaurants[0]
+        top_1 = restaurants[0]
+        top_2 = restaurants[1]
+        top_3 = restaurants[2]
+        top_4 = restaurants[3]
+        top_5 = restaurants[4]
+        return render(request, '__base__.html',
+                      {'restaurants': restaurants, 'top_1': top_1, 'top_2': top_2, 'top_3': top_3, 'top_4': top_4,
+                       'top_5': top_5})
 
 
 class RestaurantListView(View):
@@ -24,7 +37,8 @@ class RestaurantListView(View):
         restaurants = my_filter.qs
         my_search = RestaurantFilter(request.GET, queryset=restaurants)
         restaurants = my_search.qs
-        return render(request, 'restaurant_list.html', {'restaurants': restaurants, 'my_filter': my_filter})
+        return render(request, 'restaurant_list.html',
+                      {'restaurants': restaurants, 'my_filter': my_filter})
 
 
 class RestaurantDetailsView(View):
@@ -76,13 +90,14 @@ class ReservationView(LoginRequiredMixin, View):
 
     def post(self, request, id):
         restaurant = Restaurant.objects.get(pk=id)
+        ReservationForm.base_fields['table'] = forms.ModelChoiceField(queryset=Table.objects.filter(restaurant_id=id))
         form = ReservationForm(request.POST)
         if form.is_valid():
             reservation = form.save(commit=False)
-            reservation.restaurant = Restaurant.objects.get(pk=id)
+            reservation.restaurant = restaurant
             reservation.user = request.user
             reservation.save()
-            return redirect(f'/restaurant_details/{id}/')
+            return redirect(f'/restaurant_details/{id}')
         return render(request, 'reservation_form.html', {'form': form, 'restaurant': restaurant})
 
 

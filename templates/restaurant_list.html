@@ -14,7 +14,13 @@
                     {% endfor %}
                 </section>
                 <section class="average-rating"><span><i class="fa fa-star"></i></span>
-                    <p>{{ restaurant.average_rating }}</p></section>
+                    <p>
+                        {% if restaurant.average_rating == None %}
+                            N
+                        {% else %}
+                            {{ restaurant.average_rating }}
+                        {% endif %}
+                    </p></section>
             </div>
         {% endfor %}
     </div>

@@ -3,11 +3,13 @@
 {% block main %}
     <div class="restaurant">
         <div class="header-restaurant">
+            {% block sidebar %}
             <div class="sidebar-restaurant">
                 <section class="restaurant-comments">
                     {% include 'carousel_comments.html' %}
                 </section>
             </div>
+                {% endblock %}
             <h2>{{ restaurant.name }}</h2>
         </div>
         <div class="restaurant-attributes">
