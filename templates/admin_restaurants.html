@@ -4,17 +4,23 @@
     <section class="restaurant-lst-admin">
         <table>
             <tr>
-                <th colspan="2"><h3>Edit/delete restaurant</h3></th>
+                <th colspan="3"><h3>Edit/delete restaurant</h3></th>
                 <th colspan="3"><input type="text" placeholder="Search.."><input type="submit" value="Go"></th>
             </tr>
             {% for restaurant in restaurants %}
-            <tr>
-                <td>{{ restaurant.name }}</td>
-                <td>{{ restaurant.city }}</td>
-                <td><a href="{% url 'restaurant_edit' restaurant.pk %}">Edit</a></td>
-                <td><a href="{% url 'restaurant_delete' restaurant.id %}">Delete</a></td>
-                <td><a href="{% url 'admin_tables' restaurant.id %}">Manage tables</a></td>
-            </tr>
+                <tr>
+                    <td class="image">{% if restaurant.image == null %}
+                        <img alt="no picture available" src="/click_and_table/static/images/no-image.png">
+                    {% else %}
+                        <img alt="restaurant_picture"
+                             src="{{ restaurant.image.url }}">
+                    {% endif %}</td>
+                    <td>{{ restaurant.name }}</td>
+                    <td>{{ restaurant.city }}</td>
+                    <td><a href="{% url 'restaurant_edit' restaurant.pk %}">Edit</a></td>
+                    <td><a href="{% url 'restaurant_delete' restaurant.id %}">Delete</a></td>
+                    <td><a href="{% url 'admin_tables' restaurant.id %}">Manage tables</a></td>
+                </tr>
             {% endfor %}
         </table>
     </section>

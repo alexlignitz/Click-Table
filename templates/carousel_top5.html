@@ -7,47 +7,55 @@
         <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="3" aria-label="Slide 4"></button>
         <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="4" aria-label="Slide 5"></button>
     </div>
+
     <div class="carousel-inner">
-        <div class="carousel-item active" data-bs-interval="5000">
+        {% for restaurant in top_5 %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="5000">
             <div class="container">
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>{{ top_1.restaurant.name }}</h5>
-                    <p>{{ top_1.restaurant.description }}</p>
+                    <img alt="restaurant_picture" src="{{ restaurant.image.url }}">
+                    <h5>{{ restaurant.name }}</h5>
+                    <p>{{ restaurant.description }}</p>
                 </div>
             </div>
         </div>
-        <div class="carousel-item" data-bs-interval="5000">
-            <div class="container">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>{{ top_2.restaurant.name }}</h5>
-                    <p>{{ top_2.restaurant.description }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item" data-bs-interval="5000">
-            <div class="container">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>{{ top_3.restaurant.name }}</h5>
-                    <p>{{ top_3.restaurant.description }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item" data-bs-interval="5000">
-            <div class="container">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>{{ top_4.restaurant.name }}</h5>
-                    <p>{{ top_4.restaurant.description }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-item" data-bs-interval="5000">
-            <div class="container">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>{{ top_5.restaurant.name }}</h5>
-                    <p>{{ top_5.restaurant.description }}</p>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
+{#        <div class="carousel-item" data-bs-interval="5000">#}
+{#            <div class="container">#}
+{#                <div class="carousel-caption d-none d-md-block">#}
+{#                    <img alt="restaurant_picture" src="{{ top_2.restaurant.image.url }}">#}
+{#                    <h5>{{ top_2.name }}</h5>#}
+{#                    <p>{{ top_2.description }}</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="carousel-item" data-bs-interval="5000">#}
+{#            <div class="container">#}
+{#                <div class="carousel-caption d-none d-md-block">#}
+{#                    <img alt="restaurant_picture" src="{{ top_3.restaurant.image.url }}">#}
+{#                    <h5>{{ top_3.name }}</h5>#}
+{#                    <p>{{ top_3.description }}</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="carousel-item" data-bs-interval="5000">#}
+{#            <div class="container">#}
+{#                <div class="carousel-caption d-none d-md-block">#}
+{#                    <img alt="restaurant_picture" src="{{ top_4.restaurant.image.url }}">#}
+{#                    <h5>{{ top_4.name }}</h5>#}
+{#                    <p>{{ top_4.description }}</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        <div class="carousel-item" data-bs-interval="5000">#}
+{#            <div class="container">#}
+{#                <div class="carousel-caption d-none d-md-block">#}
+{#                    <img alt="restaurant_picture" src="{{ top_5.image.url }}">#}
+{#                    <h5>{{ top_5.name }}</h5>#}
+{#                    <p>{{ top_5.description }}</p>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>

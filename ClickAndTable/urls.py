@@ -21,6 +21,9 @@ from click_and_table.views import Indexview, RestaurantListView, RestaurantDetai
     DeleteCategoryView, AdminTablesView, AddTableView, EditTableView, DeleteTableView, ReservationView, \
     EditReservationView, DeleteReservationView
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # -------------ACCOUNTS-------------#
@@ -54,3 +57,7 @@ urlpatterns = [
     path('restaurant/table_edit/<int:pk>/', EditTableView.as_view(), name="table_edit"),
     path('restaurant/table_delete/<int:table_id>/', DeleteTableView.as_view(), name="table_delete"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

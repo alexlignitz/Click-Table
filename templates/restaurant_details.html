@@ -3,13 +3,12 @@
 {% block main %}
     <div class="restaurant">
         <div class="header-restaurant">
-            {% block sidebar %}
-            <div class="sidebar-restaurant">
-                <section class="restaurant-comments">
-                    {% include 'carousel_comments.html' %}
-                </section>
-            </div>
-                {% endblock %}
+            {% if restaurant.image == null %}
+                <img alt="no picture available" src="/click_and_table/static/images/no-image.png">
+            {% else %}
+                <img alt="restaurant_picture"
+                     src="{{ restaurant.image.url }}">
+            {% endif %}
             <h2>{{ restaurant.name }}</h2>
         </div>
         <div class="restaurant-attributes">
@@ -40,6 +39,19 @@
                         <a href="{% url 'registration' %}">Register</a>
                     </div>
                 {% endif %}
+            </div>
+            <div class="all-ratings">
+                {% for rating in ratings %}
+                    <div class="single-rating">
+                        <span class="comment-rating">
+                            {% for element in rating.vote_to_list %}
+                                <i class="fa fa-star"></i>
+                            {% endfor %}
+                        </span>
+                        <h5>{{ rating.user }}</h5>
+                        <p>{{ rating.comment }}</p>
+                    </div>
+                {% endfor %}
             </div>
         {% endblock %}
     </div>

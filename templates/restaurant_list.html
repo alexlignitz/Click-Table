@@ -4,8 +4,12 @@
     <div class="list">
         {% for restaurant in restaurants %}
             <div class="list_item">
-                <img alt="restaurant1"
-                     src="https://cdn.pixabay.com/photo/2018/08/10/21/52/restaurant-3597677_960_720.jpg">
+            {% if restaurant.image == null %}
+                <img alt="no picture available" src="../click_and_table/static/images/no-image.png">
+                {% else %}
+                <img alt="restaurant_picture"
+                     src="{{ restaurant.image.url }}">
+            {% endif %}
                 <h2><a href="{% url 'restaurant_details' restaurant.id %}">{{ restaurant.name }}</a></h2>
                 <p>{{ restaurant.description }}</p>
                 <section class="categories">

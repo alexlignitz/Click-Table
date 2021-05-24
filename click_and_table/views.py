@@ -1,8 +1,5 @@
-from datetime import datetime
-
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.db.models import Avg
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -16,23 +13,16 @@ from click_and_table.models import Category, City, Restaurant, Table, Rating, Re
 
 class Indexview(View):
     def get(self, request):
-        rated_restaurants = Rating.objects.filter(restaurant_id__isnull=False).distinct()
-        restaurants = rated_restaurants.annotate(mean=Avg('vote')).order_by('-vote')
-        # rated_restaurants = Restaurant.objects.filter(rating__isnull=False).distinct()
-        # restaurants = sorted(rated_restaurants, key=lambda x: x.average_rating())top_1 = restaurants[0]
-        top_1 = restaurants[0]
-        top_2 = restaurants[1]
-        top_3 = restaurants[2]
-        top_4 = restaurants[3]
-        top_5 = restaurants[4]
+        rated_restaurants = list(Restaurant.objects.filter(rating__isnull=False).distinct())
+        restaurants = sorted(rated_restaurants, key=lambda x: x.average_rating())
+        top_5 = restaurants[0:5]
         return render(request, '__base__.html',
-                      {'restaurants': restaurants, 'top_1': top_1, 'top_2': top_2, 'top_3': top_3, 'top_4': top_4,
-                       'top_5': top_5})
+                      {'restaurants': restaurants, 'top_5': top_5})
 
 
 class RestaurantListView(View):
     def get(self, request):
-        restaurants = Restaurant.objects.all()
+        restaurants = Restaurant.objects.all().order_by('name')
         my_filter = RestaurantFilter(request.GET, queryset=restaurants)
         restaurants = my_filter.qs
         my_search = RestaurantFilter(request.GET, queryset=restaurants)
@@ -43,24 +33,16 @@ class RestaurantListView(View):
 
 class RestaurantDetailsView(View):
     def get(self, request, id):
-        if Rating.objects.filter(restaurant_id=id).count() == 1:
-            restaurant = Restaurant.objects.get(id=id)
-            rating_1 = Rating.objects.filter(restaurant_id=id)[0]
-            avg_rating = restaurant.average_rating()
-            return render(request, 'restaurant_details.html',
-                          {'restaurant': restaurant, 'avg_rating': avg_rating, 'rating_1': rating_1})
-        elif Rating.objects.filter(restaurant_id=id).count() > 1:
-            restaurant = Restaurant.objects.get(id=id)
-            rating_1 = Rating.objects.filter(restaurant_id=id)[0]
-            ratings = Rating.objects.filter(restaurant_id=id)[1:]
-            avg_rating = restaurant.average_rating()
-            return render(request, 'restaurant_details.html',
-                          {'restaurant': restaurant, 'avg_rating': avg_rating, 'rating_1': rating_1,
-                           'ratings': ratings})
-        else:
+        if Rating.objects.filter(restaurant_id=id).count() == 0:
             restaurant = Restaurant.objects.get(id=id)
             return render(request, 'restaurant_details.html',
                           {'restaurant': restaurant, 'msg': 'No comments yet'})
+        else:
+            restaurant = Restaurant.objects.get(id=id)
+            ratings = Rating.objects.filter(restaurant_id=id).order_by('-vote')
+            avg_rating = restaurant.average_rating()
+            return render(request, 'restaurant_details.html',
+                          {'restaurant': restaurant, 'avg_rating': avg_rating, 'ratings': ratings})
 
     def post(self, request, id):
         restaurant = Restaurant.objects.get(id=id)
@@ -68,7 +50,17 @@ class RestaurantDetailsView(View):
         comment = request.POST.get('comment')
         user = request.user
         Rating.objects.create(vote=vote, comment=comment, user=user, restaurant=restaurant)
-        return render(request, 'restaurant_details.html', {'restaurant': restaurant})
+
+        if Rating.objects.filter(restaurant_id=id).count() == 0:
+            restaurant = Restaurant.objects.get(id=id)
+            return render(request, 'restaurant_details.html',
+                          {'restaurant': restaurant, 'msg': 'No comments yet'})
+        else:
+            restaurant = Restaurant.objects.get(id=id)
+            ratings = Rating.objects.filter(restaurant_id=id).order_by('-vote')
+            avg_rating = restaurant.average_rating()
+            return render(request, 'restaurant_details.html',
+                          {'restaurant': restaurant, 'avg_rating': avg_rating, 'ratings': ratings})
 
 
 class ContactView(View):
@@ -183,7 +175,7 @@ class AddRestaurantView(PermissionRequiredMixin, View):
 
     def post(self, request):
         restaurants = Restaurant.objects.all()
-        form = RestaurantForm(request.POST)
+        form = RestaurantForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
         return render(request, 'admin_restaurants.html', {'restaurants': restaurants})
