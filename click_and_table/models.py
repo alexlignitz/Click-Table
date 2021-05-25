@@ -24,14 +24,16 @@ class Category(models.Model):
 class Restaurant(models.Model):
     def average_rating(self):
         avg = Rating.objects.filter(restaurant=self).aggregate(Avg('vote'))
-        return round(avg['vote__avg'], 1)
+        if avg['vote__avg'] is not None:
+            return round(avg['vote__avg'], 1)
+        return 0
 
     name = models.CharField(max_length=128)
     description = models.TextField()
     street = models.CharField(max_length=128)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     category = models.ManyToManyField(Category)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(default='/static/images/no-image.png')
 
     def __str__(self):
         return self.name

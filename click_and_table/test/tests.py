@@ -1,16 +1,10 @@
 import datetime
-import random
 from random import choice
 
 import pytest
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
-from django.http import request
 from django.test import Client
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from faker import Factory
-
-from click_and_table.models import Table
 from click_and_table.test.conftest import cities, categories, city, table
 
 faker = Factory.create()
@@ -33,14 +27,15 @@ def test_index_view_get():
 
 #  ---- RESTAURANT LIST ----
 
-# @pytest.mark.django_db
-# def test_restaurant_list_view_get(restaurants):
-#     c = Client()
-#     url = reverse('restaurant_list')
-#     response = c.get(url)@pytest.fixture
-#     restaurants = response.context['restaurants']
-#     assert response.status_code == 200
-#     assert restaurants.count() == len(restaurants)
+@pytest.mark.django_db
+def test_restaurant_list_view_get(restaurants):
+    c = Client()
+    url = reverse('restaurant_list')
+    response = c.get(url)
+    restaurants = response.context['restaurants']
+    assert response.status_code == 200
+    assert restaurants.count() == len(restaurants)
+
 
 # ---- ADMIN TOOLS ----
 
@@ -54,10 +49,10 @@ def test_admin_tools_view_no_perm(user):
 
 
 @pytest.mark.django_db
-def test_add_restaurant_with_perm(user_perm_admin):
+def test_admin_tools_with_perm(user_perm_admin):
     c = Client()
     c.force_login(user_perm_admin)
-    url = reverse('restaurant_add')
+    url = reverse('admin_tools')
     response = c.get(url)
     assert response.status_code == 200
 
@@ -168,7 +163,6 @@ def test_delete_restaurant_with_perm_post(user_perm_restaurant, restaurant):
     c = Client()
     c.force_login(user_perm_restaurant)
     url = reverse('restaurant_delete', args=[restaurant.id])
-    restaurant.delete()
     response = c.post(url)
     assert response.status_code == 200
 
@@ -263,7 +257,6 @@ def test_delete_city_with_perm_post(user_perm_city, city):
     c = Client()
     c.force_login(user_perm_city)
     url = reverse('city_delete', args=[city.id])
-    city.delete()
     response = c.post(url)
     assert response.status_code == 200
 
@@ -357,9 +350,8 @@ def test_delete_category_with_perm_get(user_perm_category, category):
 def test_delete_category_with_perm_post(user_perm_category, category):
     c = Client()
     c.force_login(user_perm_category)
-    url = reverse('city_delete', args=[category.id])
-    category.delete()
-    response = c.post(url)
+    url = reverse('category_delete', args=[category.id])
+    response = c.post(url, {'answer': 'Yes'})
     assert response.status_code == 200
 
 
@@ -465,12 +457,19 @@ def test_delete_table_with_perm_post(user_perm_table, table):
     c = Client()
     c.force_login(user_perm_table)
     url = reverse('table_delete', args=[table.id])
-    table.delete()
-    response = c.post(url)
-    assert response.status_code == 200
+    response = c.post(url, {'answer': 'Yes'})
+    assert response.status_code == 302
 
 
 # ---- RESTAURANT DETAILS ----
+
+@pytest.mark.django_db
+def test_restaurant_details(restaurant):
+    c = Client()
+    url = reverse('restaurant_details', args=[restaurant.id])
+    response = c.get(url)
+    assert response.status_code == 200
+
 
 # ---- RESERVATION ----
 
@@ -493,19 +492,79 @@ def test_add_reservation_login_get(user, restaurant):
 
 
 @pytest.mark.django_db
-def test_add_reservation_login_post(user, restaurant):
+def test_add_reservation_login_post(user, table):
     c = Client()
-    url = reverse('reservation', args=[restaurant.id])
+    url = reverse('reservation', args=[table.restaurant.id])
     c.force_login(user)
     ctx = {
-        'restaurant': restaurant.id,
-        'table': Table.objects.create(restaurant_id=restaurant.id, size=4, window_view=False, outside=False),
+        'restaurant': table.restaurant.id,
+        'table': table.restaurant.id,
         'date': datetime.date.today() + datetime.timedelta(days=1),
         'time_from': '17:00',
         'time_to': '19:00',
         'user': user,
     }
     response = c.post(url, ctx)
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_edit_reservation_no_login(user, reservation):
+    c = Client()
+    url = reverse('reservation_edit', args=[reservation.id])
+    response = c.get(url)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_edit_reservation_login_get(user, reservation):
+    c = Client()
+    url = reverse('reservation_edit', args=[reservation.id])
+    c.force_login(user)
+    response = c.get(url)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_edit_reservation_login_post(user, reservation, restaurants, tables):
+    c = Client()
+    url = reverse('reservation_edit', args=[reservation.id])
+    c.force_login(user)
+    ctx = {
+        'table': reservation.table,
+        'date': datetime.date.today() + datetime.timedelta(days=1),
+        'time_from': '18:00',
+        'time_to': '20:00',
+    }
+    response = c.get(url, ctx)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_delete_reservation_no_login(user, reservation):
+    c = Client()
+    url = reverse('reservation_delete', args=[reservation.id])
+    response = c.get(url)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_delete_reservation_login_get(user, reservation):
+    c = Client()
+    url = reverse('reservation_delete', args=[reservation.id])
+    c.force_login(user)
+    response = c.get(url)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_delete_reservation_login_post(user, reservation):
+    c = Client()
+    c.force_login(user)
+    url = reverse('reservation_delete', args=[reservation.id])
+    response = c.post(url, {'answer': 'Yes'})
     assert response.status_code == 302
 
 

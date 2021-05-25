@@ -69,7 +69,7 @@ class ReservationForm(forms.ModelForm):
                                              time_to__lte=time_to).exists()
         if check_1 or check_2 or check_3:
             raise ValidationError('Table not available in the requested time. Please choose another table and/or time')
-        elif date_str < today:
-            raise ValidationError('Cannot book in the past')
+        elif date_str <= today:
+            raise ValidationError('Booking must be done at least one day in advance')
         else:
             return data

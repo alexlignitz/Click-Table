@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.db.models import Avg
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -120,11 +119,10 @@ class DeleteReservationView(LoginRequiredMixin, View):
 
     def post(self, request, id):
         reservation = Reservation.objects.get(id=id)
-        reservations = Reservation.objects.filter(user=request.user).order_by('date')
         if request.POST.get('answer') == "Yes":
             rsrv = Reservation.objects.get(id=id)
             rsrv.delete()
-            return render(request, 'my_account.html', {'reservations': reservations})
+            return redirect('my_account')
         return render(request, 'admin_delete.html', {'object': f'reservation for {reservation}'})
 
 
@@ -139,6 +137,14 @@ class AdminView(PermissionRequiredMixin, View):
 
     def get(self, request):
         return render(request, 'admin_tools.html')
+
+
+def search(search_key, object_lst):
+    result = []
+    for object in object_lst:
+        if search_key in object.name.lower():
+            result.append(object)
+    return result
 
 
 class AdminRestaurantsView(View):
@@ -231,7 +237,7 @@ class EditCategoryView(PermissionRequiredMixin, UpdateView):
     template_name = 'admin_form.html'
 
 
-class DeleteCategoryView(View):
+class DeleteCategoryView(PermissionRequiredMixin, View):
     permission_required = ['click_and_table.delete_category']
 
     def get(self, request, id):
@@ -272,7 +278,7 @@ class EditCityView(PermissionRequiredMixin, UpdateView):
     template_name = 'admin_form.html'
 
 
-class DeleteCityView(View):
+class DeleteCityView(PermissionRequiredMixin, View):
     permission_required = ['click_and_table.delete_city']
 
     def get(self, request, id):
@@ -284,7 +290,7 @@ class DeleteCityView(View):
         if request.POST.get('answer') == "Yes":
             city = City.objects.get(id=id)
             city.delete()
-            return render(request, 'message_template.html', {'msg': 'City deleted'})
+            return render(request, 'admin_cities.html', {'cities': cities})
         return render(request, 'admin_cities.html', {'cities': cities})
 
 
@@ -325,4 +331,5 @@ class DeleteTableView(PermissionRequiredMixin, View):
             table = Table.objects.get(id=table_id)
             table.delete()
             return redirect('admin_tables', id=table.restaurant.id)
-        return render(request, 'admin_tables.html', {'tables': tables})
+        restaurant = Restaurant.objects.get(pk=id)
+        return render(request, 'admin_tables.html', {'tables': tables, 'restaurant': restaurant})
