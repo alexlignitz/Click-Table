@@ -37,6 +37,153 @@ def test_restaurant_list_view_get(restaurants):
     assert restaurants.count() == len(restaurants)
 
 
+# ---- RESTAURANT DETAILS ----
+
+@pytest.mark.django_db
+def test_restaurant_details(restaurant):
+    c = Client()
+    url = reverse('restaurant_details', args=[restaurant.id])
+    response = c.get(url)
+    assert response.status_code == 200
+
+
+# ---- RESERVATION ----
+
+@pytest.mark.django_db
+def test_view_reservations_no_login(user, reservations):
+    c = Client()
+    url = reverse('my_account')
+    response = c.get(url)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_view_reservations_login(user, reservations):
+    c = Client()
+    url = reverse('my_account')
+    c.force_login(user)
+    response = c.get(url)
+    reservations = response.context['reservations']
+    assert response.status_code == 200
+    assert reservations.count() == len(reservations)
+
+
+@pytest.mark.django_db
+def test_add_reservation_no_login(user, restaurant):
+    c = Client()
+    url = reverse('reservation', args=[restaurant.id])
+    response = c.get(url)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_add_reservation_login_get(user, restaurant):
+    c = Client()
+    url = reverse('reservation', args=[restaurant.id])
+    c.force_login(user)
+    response = c.get(url)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_add_reservation_login_post(user, table):
+    c = Client()
+    url = reverse('reservation', args=[table.restaurant.id])
+    c.force_login(user)
+    ctx = {
+        'restaurant': table.restaurant.id,
+        'table': table.restaurant.id,
+        'date': datetime.date.today() + datetime.timedelta(days=1),
+        'time_from': '17:00',
+        'time_to': '19:00',
+        'user': user,
+    }
+    response = c.post(url, ctx)
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_edit_reservation_no_login(user, reservation):
+    c = Client()
+    url = reverse('reservation_edit', args=[reservation.id])
+    response = c.get(url)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_edit_reservation_login_get(user, reservation):
+    c = Client()
+    url = reverse('reservation_edit', args=[reservation.id])
+    c.force_login(user)
+    response = c.get(url)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_edit_reservation_login_post(user, reservation, restaurants, tables):
+    c = Client()
+    url = reverse('reservation_edit', args=[reservation.id])
+    c.force_login(user)
+    ctx = {
+        'table': reservation.table,
+        'date': datetime.date.today() + datetime.timedelta(days=1),
+        'time_from': '18:00',
+        'time_to': '20:00',
+    }
+    response = c.get(url, ctx)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_delete_reservation_no_login(user, reservation):
+    c = Client()
+    url = reverse('reservation_delete', args=[reservation.id])
+    response = c.get(url)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_delete_reservation_login_get(user, reservation):
+    c = Client()
+    url = reverse('reservation_delete', args=[reservation.id])
+    c.force_login(user)
+    response = c.get(url)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_delete_reservation_login_post(user, reservation):
+    c = Client()
+    c.force_login(user)
+    url = reverse('reservation_delete', args=[reservation.id])
+    response = c.post(url, {'answer': 'Yes'})
+    assert response.status_code == 302
+
+
+#  ---- CONTACT PAGE ----
+
+@pytest.mark.django_db
+def test_contact_view():
+    c = Client()
+    url = reverse('contact_us')
+    response = c.get(url)
+    assert response.status_code == 200
+
+
+#  ---- HELP PAGE ----
+
+@pytest.mark.django_db
+def test_contact_view():
+    c = Client()
+    url = reverse('help')
+    response = c.get(url)
+    assert response.status_code == 200
+
+
 # ---- ADMIN TOOLS ----
 
 @pytest.mark.django_db
@@ -459,130 +606,3 @@ def test_delete_table_with_perm_post(user_perm_table, table):
     url = reverse('table_delete', args=[table.id])
     response = c.post(url, {'answer': 'Yes'})
     assert response.status_code == 302
-
-
-# ---- RESTAURANT DETAILS ----
-
-@pytest.mark.django_db
-def test_restaurant_details(restaurant):
-    c = Client()
-    url = reverse('restaurant_details', args=[restaurant.id])
-    response = c.get(url)
-    assert response.status_code == 200
-
-
-# ---- RESERVATION ----
-
-@pytest.mark.django_db
-def test_add_reservation_no_login(user, restaurant):
-    c = Client()
-    url = reverse('reservation', args=[restaurant.id])
-    response = c.get(url)
-    assert response.status_code == 302
-    assert response.url.startswith(reverse('login'))
-
-
-@pytest.mark.django_db
-def test_add_reservation_login_get(user, restaurant):
-    c = Client()
-    url = reverse('reservation', args=[restaurant.id])
-    c.force_login(user)
-    response = c.get(url)
-    assert response.status_code == 200
-
-
-@pytest.mark.django_db
-def test_add_reservation_login_post(user, table):
-    c = Client()
-    url = reverse('reservation', args=[table.restaurant.id])
-    c.force_login(user)
-    ctx = {
-        'restaurant': table.restaurant.id,
-        'table': table.restaurant.id,
-        'date': datetime.date.today() + datetime.timedelta(days=1),
-        'time_from': '17:00',
-        'time_to': '19:00',
-        'user': user,
-    }
-    response = c.post(url, ctx)
-    assert response.status_code == 302
-
-
-@pytest.mark.django_db
-def test_edit_reservation_no_login(user, reservation):
-    c = Client()
-    url = reverse('reservation_edit', args=[reservation.id])
-    response = c.get(url)
-    assert response.status_code == 302
-    assert response.url.startswith(reverse('login'))
-
-
-@pytest.mark.django_db
-def test_edit_reservation_login_get(user, reservation):
-    c = Client()
-    url = reverse('reservation_edit', args=[reservation.id])
-    c.force_login(user)
-    response = c.get(url)
-    assert response.status_code == 200
-
-
-@pytest.mark.django_db
-def test_edit_reservation_login_post(user, reservation, restaurants, tables):
-    c = Client()
-    url = reverse('reservation_edit', args=[reservation.id])
-    c.force_login(user)
-    ctx = {
-        'table': reservation.table,
-        'date': datetime.date.today() + datetime.timedelta(days=1),
-        'time_from': '18:00',
-        'time_to': '20:00',
-    }
-    response = c.get(url, ctx)
-    assert response.status_code == 200
-
-
-@pytest.mark.django_db
-def test_delete_reservation_no_login(user, reservation):
-    c = Client()
-    url = reverse('reservation_delete', args=[reservation.id])
-    response = c.get(url)
-    assert response.status_code == 302
-    assert response.url.startswith(reverse('login'))
-
-
-@pytest.mark.django_db
-def test_delete_reservation_login_get(user, reservation):
-    c = Client()
-    url = reverse('reservation_delete', args=[reservation.id])
-    c.force_login(user)
-    response = c.get(url)
-    assert response.status_code == 200
-
-
-@pytest.mark.django_db
-def test_delete_reservation_login_post(user, reservation):
-    c = Client()
-    c.force_login(user)
-    url = reverse('reservation_delete', args=[reservation.id])
-    response = c.post(url, {'answer': 'Yes'})
-    assert response.status_code == 302
-
-
-#  ---- CONTACT PAGE ----
-
-@pytest.mark.django_db
-def test_contact_view():
-    c = Client()
-    url = reverse('contact_us')
-    response = c.get(url)
-    assert response.status_code == 200
-
-
-#  ---- HELP PAGE ----
-
-@pytest.mark.django_db
-def test_contact_view():
-    c = Client()
-    url = reverse('help')
-    response = c.get(url)
-    assert response.status_code == 200

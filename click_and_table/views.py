@@ -139,14 +139,6 @@ class AdminView(PermissionRequiredMixin, View):
         return render(request, 'admin_tools.html')
 
 
-def search(search_key, object_lst):
-    result = []
-    for object in object_lst:
-        if search_key in object.name.lower():
-            result.append(object)
-    return result
-
-
 class AdminRestaurantsView(View):
     def get(self, request):
         restaurants = Restaurant.objects.all()
