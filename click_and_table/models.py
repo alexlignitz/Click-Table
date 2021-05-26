@@ -44,14 +44,6 @@ class Table(models.Model):
     size = models.SmallIntegerField(null=False)
     window_view = models.BooleanField(default=False)
     outside = models.BooleanField(default=False)
-    #
-    # def clean(self):
-    #     data = super().clean()
-    #     window = data['window_view']
-    #     outside = data['outside']
-    #     if window and outside:
-    #         raise ValidationError('Cannot choose window seat AND garden seat, please choose one')
-    #     return data
 
     def get_absolute_url(self):
         return reverse_lazy('admin_tables', kwargs={'id': self.restaurant.id})

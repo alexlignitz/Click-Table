@@ -144,8 +144,10 @@ nav {
 .container {
     position: relative;
     min-height: 40vh;
-    width: 70%;
-    background-color: white;
+    width: 90%;
+    font-family: 'Raleway', 'Arial', sans-serif;
+    font-size: 12px;
+    margin: 10px auto;
 }
 
 .carousel-caption img{
@@ -429,6 +431,31 @@ div.log-in p, div.registration p {
     width: 100%;
     text-align: center;
     background-color: white;
+}
+
+div.rsv-confirm{
+    margin: 0;
+    font-family: 'Raleway', 'Arial', sans-serif;
+    font-size: 20px;
+}
+
+div.back a{
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    text-align: center;
+    color: #222222;
+    font-family: 'Raleway', 'Arial', sans-serif;
+    background-color: gold;
+    padding: 5px;
+    border: solid #222 1px;
+    margin: 5px 5px;
+}
+
+div.back a:hover{
+    color: gold;
+    background-color: #222;
+    border: gold solid 1px;
 }
 
 /* ----VOTING---- */
@@ -756,4 +783,28 @@ div.my-account {
 footer {
     height: 5vh;
     background-color: goldenrod;
+}
+
+/* ---- FORM ERRORS ---- */
+
+ul.errorlist li{
+        color: red;
+    }
+
+/* ---- DELETE FORM ---- */
+
+input.delete{
+    background-color: gold;
+    border: #222 solid 1px;
+    margin: 2px;
+    padding: 5px 10px;
+    color: #222222;
+    font-size: 1.5rem;
+    font-family: 'Raleway', 'Arial', sans-serif;
+}
+
+input.delete:hover{
+    background-color: #222;
+    border: gold solid 1px;
+    color: gold;
 }

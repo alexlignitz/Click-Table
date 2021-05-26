@@ -1,0 +1,10 @@
+{% extends 'restaurant_details.html' %}
+{% load static %}
+{% block voting-booking %}
+    <div class="rsv-confirm">
+{{ msg }}
+    </div>
+    <div class="back">
+    <a href="{% url 'restaurant_details' restaurant.id %}">Back to restaurant details</a>
+    </div>
+{% endblock %}

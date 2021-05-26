@@ -101,7 +101,7 @@ def test_add_reservation_login_post(user, table):
         'user': user,
     }
     response = c.post(url, ctx)
-    assert response.status_code == 302
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db
@@ -540,7 +540,7 @@ def test_add_table_with_perm_post(user_perm_table, restaurant, restaurants):
     url = reverse('table_add', args=[restaurant.id])
     ctx = {
         'size': 4,
-        'restaurant': choice(restaurants),
+        'restaurant': restaurants[0],
         'window': True,
         'garden': False
     }

@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import UpdateView
 
@@ -13,7 +13,7 @@ from click_and_table.models import Category, City, Restaurant, Table, Rating, Re
 class Indexview(View):
     def get(self, request):
         rated_restaurants = list(Restaurant.objects.filter(rating__isnull=False).distinct())
-        restaurants = sorted(rated_restaurants, key=lambda x: x.average_rating())
+        restaurants = sorted(rated_restaurants, key=lambda x: x.average_rating(), reverse=True)
         top_5 = restaurants[0:5]
         return render(request, '__base__.html',
                       {'restaurants': restaurants, 'top_5': top_5})
@@ -88,7 +88,7 @@ class ReservationView(LoginRequiredMixin, View):
             reservation.restaurant = restaurant
             reservation.user = request.user
             reservation.save()
-            return redirect(f'/restaurant_details/{id}')
+            return render(request, 'reservation_confirmation.html', {'msg': f"Table booked in {reservation.restaurant} on {reservation.date} at {reservation.time_from}", 'restaurant': restaurant})
         return render(request, 'reservation_form.html', {'form': form, 'restaurant': restaurant})
 
 
@@ -103,6 +103,7 @@ class EditReservationView(LoginRequiredMixin, View):
     def post(self, request, id):
         reservation = Reservation.objects.get(pk=id)
         form = ReservationForm(request.POST, instance=reservation)
+        reservation.delete()
         if form.is_valid():
             rsrv = form.save(commit=False)
             rsrv.restaurant = reservation.restaurant
@@ -115,15 +116,14 @@ class EditReservationView(LoginRequiredMixin, View):
 class DeleteReservationView(LoginRequiredMixin, View):
     def get(self, request, id):
         reservation = Reservation.objects.get(id=id)
-        return render(request, 'admin_delete.html', {'object': f'reservation for {reservation}'})
+        return render(request, 'reservation_delete.html', {'object': f'reservation for {reservation}'})
 
     def post(self, request, id):
-        reservation = Reservation.objects.get(id=id)
         if request.POST.get('answer') == "Yes":
             rsrv = Reservation.objects.get(id=id)
             rsrv.delete()
             return redirect('my_account')
-        return render(request, 'admin_delete.html', {'object': f'reservation for {reservation}'})
+        return redirect('my_account')
 
 
 # ------------------------------------- ADMIN TOOLS -------------------------------------------------------------
@@ -141,7 +141,7 @@ class AdminView(PermissionRequiredMixin, View):
 
 class AdminRestaurantsView(View):
     def get(self, request):
-        restaurants = Restaurant.objects.all()
+        restaurants = Restaurant.objects.all().order_by('name')
         return render(request, 'admin_restaurants.html', {'restaurants': restaurants})
 
 
@@ -172,11 +172,12 @@ class AddRestaurantView(PermissionRequiredMixin, View):
         return render(request, 'admin_form.html', {'form': form})
 
     def post(self, request):
-        restaurants = Restaurant.objects.all()
+        restaurants = Restaurant.objects.all().order_by('name')
         form = RestaurantForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-        return render(request, 'admin_restaurants.html', {'restaurants': restaurants})
+            return render(request, 'admin_restaurants.html', {'restaurants': restaurants})
+        return render(request, 'admin_form.html', {'form': form})
 
 
 class EditRestaurantView(PermissionRequiredMixin, UpdateView):
@@ -298,7 +299,9 @@ class AddTableView(PermissionRequiredMixin, View):
         tables = Table.objects.filter(restaurant_id=rest_id)
         form = TableForm(request.POST)
         if form.is_valid():
-            form.save()
+            table = form.save(commit=False)
+            table.restaurant_id = rest_id
+            table.save()
         return render(request, 'admin_tables.html', {'tables': tables, 'restaurant': restaurant})
 
 

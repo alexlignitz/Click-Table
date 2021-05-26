@@ -1,7 +1,9 @@
 from datetime import datetime
 
 from django import forms
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.forms import TextInput
 
 from click_and_table.models import Restaurant, Category, City, Table, Reservation
 
@@ -32,6 +34,7 @@ class TableForm(forms.ModelForm):
     class Meta:
         model = Table
         fields = '__all__'
+        exclude = ('restaurant',)
 
 
 class DateInput(forms.DateInput):
@@ -61,12 +64,13 @@ class ReservationForm(forms.ModelForm):
         time_from = data['time_from']
         time_to = data['time_to']
 
-        check_1 = Reservation.objects.filter(table_id=table, date=date, time_from__lte=time_from,
-                                             time_to__gte=time_from).exists()
-        check_2 = Reservation.objects.filter(table_id=table, date=date, time_from__lte=time_to,
-                                             time_to__gte=time_to).exists()
-        check_3 = Reservation.objects.filter(table_id=table, date=date, time_from__gte=time_from,
-                                             time_to__lte=time_to).exists()
+        check_1 = Reservation.objects.filter(table_id=table, date=date, time_from__lt=time_from,
+                                             time_to__gt=time_from).exists()
+        check_2 = Reservation.objects.filter(table_id=table, date=date, time_from__lt=time_to,
+                                             time_to__gt=time_to).exists()
+        check_3 = Reservation.objects.filter(table_id=table, date=date, time_from__gt=time_from,
+                                             time_to__lt=time_to).exists()
+
         if check_1 or check_2 or check_3:
             raise ValidationError('Table not available in the requested time. Please choose another table and/or time')
         elif date_str <= today:

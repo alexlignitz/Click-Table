@@ -14,7 +14,7 @@
             <div class="container">
                 <div class="carousel-caption d-none d-md-block">
                     <img alt="restaurant_picture" src="{{ restaurant.image.url }}">
-                    <h5>{{ restaurant.name }}</h5>
+                    <h5><a href="{% url 'restaurant_details' restaurant.id %}">{{ restaurant.name }}</a></h5>
                     <p>{{ restaurant.description }}</p>
                 </div>
             </div>

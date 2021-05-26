@@ -1,5 +1,5 @@
-{% extends 'admin_tools.html' %}
-{% block content %}
+{% extends 'my_account.html' %}
+{% block reservation %}
     <form method="post">
         {% csrf_token %}
         <h3>Delete {{ object }}?</h3>
