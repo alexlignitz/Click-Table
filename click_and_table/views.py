@@ -11,6 +11,10 @@ from click_and_table.models import Category, City, Restaurant, Table, Rating, Re
 
 
 class Indexview(View):
+    """
+        Home view, includes a carousel with top 5 rated restaurants
+    """
+
     def get(self, request):
         rated_restaurants = list(Restaurant.objects.filter(rating__isnull=False).distinct())
         restaurants = sorted(rated_restaurants, key=lambda x: x.average_rating(), reverse=True)
@@ -20,6 +24,11 @@ class Indexview(View):
 
 
 class RestaurantListView(View):
+    """
+    Displays a list of all restaurants (including all information), sorted by names.
+    Search and filter option included in the sidebar.
+    """
+
     def get(self, request):
         restaurants = Restaurant.objects.all().order_by('name')
         my_filter = RestaurantFilter(request.GET, queryset=restaurants)
@@ -31,6 +40,11 @@ class RestaurantListView(View):
 
 
 class RestaurantDetailsView(View):
+    """
+    Detailed view of a single restaurant, available after clicking on restaurant name in the restaurant list or top 5 view.
+    Includes also voting and booking section.
+    """
+
     def get(self, request, id):
         if Rating.objects.filter(restaurant_id=id).count() == 0:
             restaurant = Restaurant.objects.get(id=id)
@@ -63,16 +77,28 @@ class RestaurantDetailsView(View):
 
 
 class ContactView(View):
+    """
+    Contact details
+    """
+
     def get(self, request):
         return render(request, 'contact_us.html')
 
 
 class HelpView(View):
+    """
+    Section prepared for a small tutorial on how to use the website. Currently under construction.
+    """
+
     def get(self, request):
         return render(request, 'help.html')
 
 
 class ReservationView(LoginRequiredMixin, View):
+    """
+    Booking a table. Only allowed after log in.
+    """
+
     def get(self, request, id):
         restaurant = Restaurant.objects.get(pk=id)
         ReservationForm.base_fields['table'] = forms.ModelChoiceField(queryset=Table.objects.filter(restaurant_id=id))
@@ -88,11 +114,17 @@ class ReservationView(LoginRequiredMixin, View):
             reservation.restaurant = restaurant
             reservation.user = request.user
             reservation.save()
-            return render(request, 'reservation_confirmation.html', {'msg': f"Table booked in {reservation.restaurant} on {reservation.date} at {reservation.time_from}", 'restaurant': restaurant})
+            return render(request, 'reservation_confirmation.html', {
+                'msg': f"Table booked in {reservation.restaurant} on {reservation.date} at {reservation.time_from}",
+                'restaurant': restaurant})
         return render(request, 'reservation_form.html', {'form': form, 'restaurant': restaurant})
 
 
 class EditReservationView(LoginRequiredMixin, View):
+    """
+    Allows reservation modification after logging in to My Account section
+    """
+
     def get(self, request, id):
         reservation = Reservation.objects.get(pk=id)
         ReservationForm.base_fields['table'] = forms.ModelChoiceField(
@@ -114,6 +146,10 @@ class EditReservationView(LoginRequiredMixin, View):
 
 
 class DeleteReservationView(LoginRequiredMixin, View):
+    """
+    Allows reservation deletion after logging in to My Account section
+    """
+
     def get(self, request, id):
         reservation = Reservation.objects.get(id=id)
         return render(request, 'reservation_delete.html', {'object': f'reservation for {reservation}'})
@@ -129,6 +165,10 @@ class DeleteReservationView(LoginRequiredMixin, View):
 # ------------------------------------- ADMIN TOOLS -------------------------------------------------------------
 
 class AdminView(PermissionRequiredMixin, View):
+    """
+    Allows access to managing of restaurants and their tables, as well as categories and cities.
+    Only visible to the users with certain permissions group.
+    """
     permission_required = ['click_and_table.change_restaurant', 'click_and_table.add_restaurant',
                            'click_and_table.delete_restaurant', 'click_and_table.change_category',
                            'click_and_table.add_category', 'click_and_table.delete_category',
@@ -140,24 +180,38 @@ class AdminView(PermissionRequiredMixin, View):
 
 
 class AdminRestaurantsView(View):
+    """
+    Allows access to restaurant list and available options: adding/modifying/deleting restaurant
+    and managing restaurant tables.
+    """
     def get(self, request):
         restaurants = Restaurant.objects.all().order_by('name')
         return render(request, 'admin_restaurants.html', {'restaurants': restaurants})
 
 
 class AdminCategoriesView(View):
+    """
+   Allows access to category list and available options: adding/modifying/deleting of categories.
+   """
+
     def get(self, request):
         categories = Category.objects.all()
         return render(request, 'admin_categories.html', {'categories': categories})
 
 
 class AdminCitiesView(View):
+    """
+   Allows access to city list and available options: adding/modifying/deleting of the cities.
+   """
     def get(self, request):
         cities = City.objects.all()
         return render(request, 'admin_cities.html', {'cities': cities})
 
 
 class AdminTablesView(View):
+    """
+   Allows access to tables list of a specific restaurant and available options: adding/modifying/deleting of tables.
+   """
     def get(self, request, id):
         restaurant = Restaurant.objects.get(pk=id)
         tables = Table.objects.filter(restaurant_id=restaurant.id)
@@ -165,6 +219,10 @@ class AdminTablesView(View):
 
 
 class AddRestaurantView(PermissionRequiredMixin, View):
+    """
+    Adding restaurant to database. Allowed only to users with specific access.
+    All fields except image upload are required.
+    """
     permission_required = ['click_and_table.add_restaurant']
 
     def get(self, request):
@@ -181,6 +239,10 @@ class AddRestaurantView(PermissionRequiredMixin, View):
 
 
 class EditRestaurantView(PermissionRequiredMixin, UpdateView):
+    """
+    Modifying restaurant in the database. Allowed only to users with specific access.
+    All fields except image upload are required.
+    """
     permission_required = ['click_and_table.change_restaurant']
 
     model = Restaurant
@@ -190,6 +252,9 @@ class EditRestaurantView(PermissionRequiredMixin, UpdateView):
 
 
 class DeleteRestaurantView(PermissionRequiredMixin, View):
+    """
+    Deleting restaurant from the database. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.delete_restaurant']
 
     def get(self, request, id):
@@ -206,6 +271,9 @@ class DeleteRestaurantView(PermissionRequiredMixin, View):
 
 
 class AddCategoryView(PermissionRequiredMixin, View):
+    """
+    Adding category to the database. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.add_category']
 
     def get(self, request):
@@ -222,6 +290,9 @@ class AddCategoryView(PermissionRequiredMixin, View):
 
 
 class EditCategoryView(PermissionRequiredMixin, UpdateView):
+    """
+    Modifying category in the database. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.change_category']
 
     model = Category
@@ -231,6 +302,9 @@ class EditCategoryView(PermissionRequiredMixin, UpdateView):
 
 
 class DeleteCategoryView(PermissionRequiredMixin, View):
+    """
+    Deleting category from the database. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.delete_category']
 
     def get(self, request, id):
@@ -247,6 +321,9 @@ class DeleteCategoryView(PermissionRequiredMixin, View):
 
 
 class AddCityView(PermissionRequiredMixin, View):
+    """
+    Adding city to the database. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.add_city']
 
     def get(self, request):
@@ -263,6 +340,9 @@ class AddCityView(PermissionRequiredMixin, View):
 
 
 class EditCityView(PermissionRequiredMixin, UpdateView):
+    """
+    Modifying city in the database. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.change_city']
 
     model = City
@@ -272,6 +352,9 @@ class EditCityView(PermissionRequiredMixin, UpdateView):
 
 
 class DeleteCityView(PermissionRequiredMixin, View):
+    """
+    Deleting city from the database. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.delete_city']
 
     def get(self, request, id):
@@ -288,6 +371,9 @@ class DeleteCityView(PermissionRequiredMixin, View):
 
 
 class AddTableView(PermissionRequiredMixin, View):
+    """
+    Adding table to the restaurant. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.add_table']
 
     def get(self, request, rest_id):
@@ -307,6 +393,9 @@ class AddTableView(PermissionRequiredMixin, View):
 
 
 class EditTableView(PermissionRequiredMixin, UpdateView):
+    """
+    Modifying table in the restaurant. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.change_table']
 
     model = Table
@@ -315,6 +404,9 @@ class EditTableView(PermissionRequiredMixin, UpdateView):
 
 
 class DeleteTableView(PermissionRequiredMixin, View):
+    """
+    Deleting table from the restaurant. Allowed only to users with specific access.
+    """
     permission_required = ['click_and_table.delete_table']
 
     def get(self, request, table_id):

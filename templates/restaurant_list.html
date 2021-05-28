@@ -11,6 +11,7 @@
                      src="{{ restaurant.image.url }}">
             {% endif %}
                 <h2><a href="{% url 'restaurant_details' restaurant.id %}">{{ restaurant.name }}</a></h2>
+                <p>{{ restaurant.street }}, {{ restaurant.city }}</p>
                 <p>{{ restaurant.description }}</p>
                 <section class="categories">
                     {% for category in restaurant.category.all %}
