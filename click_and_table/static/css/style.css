@@ -192,6 +192,10 @@ section.search form, section.filter form {
     font-size: 15px;
 }
 
+section.search ul, section.filter ul{
+        list-style-type: none;
+}
+
 section.search .submit-search, section.filter .submit-filter {
     display: inline-block;
     font-size: 1.5rem;

@@ -291,8 +291,9 @@ class AddTableView(PermissionRequiredMixin, View):
     permission_required = ['click_and_table.add_table']
 
     def get(self, request, rest_id):
+        restaurant = Restaurant.objects.get(pk=rest_id)
         form = TableForm(initial={'restaurant': rest_id})
-        return render(request, 'admin_form.html', {'form': form})
+        return render(request, 'admin_form.html', {'form': form, 'object': restaurant})
 
     def post(self, request, rest_id):
         restaurant = Restaurant.objects.get(pk=rest_id)

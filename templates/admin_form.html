@@ -1,6 +1,7 @@
 {% extends 'admin_tools.html' %}
 {% load static %}
 {% block content %}
+    <h3>{{ object }}</h3>
     <form class="admin-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
