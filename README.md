@@ -2,6 +2,7 @@
 My evaluation project prepared during Python Developer course at Coders Lab
 
 It is a website allowing customers to book tables in restaurants.
+Try it on: http://alexlignitz.pythonanywhere.com/
 
 Options:
 - Viewing and searching for restaurants is allowed to all website visitors. 
